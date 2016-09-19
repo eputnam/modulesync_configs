@@ -1,0 +1,52 @@
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url 'http://repo.jenkins-ci.org/releases/' }
+    maven { url 'http://nexus.delivery.puppetlabs.net/content/repositories/releases/' }
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.4.4'
+    compile "org.jenkins-ci.plugins:job-dsl-core:${jobDslVersion}"
+    compile "puppetlabs:puppet-jobdsl-lib:${puppetJobDslLibVersion}" //to support task:debugXML
+
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testCompile "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}"
+    testCompile "puppetlabs:puppet-jobdsl-lib:${puppetJobDslLibVersion}" //to support task:test
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14'
+}
+
+/**
+ * The following is necessary in order to get successive calles to 'gradle test'
+ * to rerun the tests (which is what I suspect most people would expect to be
+ * the behavior of a command that runs test given the behavior of test runners
+ * like beaker, leiningen, rspec).
+ */
+test.outputs.upToDateWhen {
+    return false
+}
+
+test {
+    // This enable logging the println in the SeedsValidityTest.groovy file
+    testLogging {
+        events 'standard_out', 'standard_error'
+    }
+}
+
+// using an existing method in the jobdsl library called 'run' that can output the XML job files
+// specify the 'source' argument on the command line: ./gradlew debugXML -Psource=jenkins/seeds/exampleJob.groovy
+task debugXML(dependsOn: 'classes', type: JavaExec) {
+    if(project.hasProperty('source')){
+        args(source.split(','))
+        main = 'javaposse.jobdsl.Run'
+        classpath sourceSets.main.runtimeClasspath
+    }
+    else {
+        println('ERROR: Usage ./gradlew debugXML -Psource=jenkins/seeds/exampleJob.groovy')
+    }
+}
