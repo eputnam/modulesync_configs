@@ -1,5 +1,5 @@
 /**
- * Test that the example JobDSL scripts don't raise exceptions when run.
+ * Test that the example JobDSL scripts does not raise exceptions when run.
  */
 
 import groovy.io.FileType
@@ -7,9 +7,6 @@ import groovy.io.FileType
 import javaposse.jobdsl.dsl.*
 import spock.lang.*
 
-/**
- *
- */
 class SeedsValidityTest extends Specification {
 
   @Unroll
@@ -19,11 +16,7 @@ class SeedsValidityTest extends Specification {
 
     when:
     GeneratedItems generatedItems = new DslScriptLoader(jm).runScript(file.text)
-    def jobs = generatedItems.jobs
-    println "Test generated " + jobs.size() + " jobs"
-    jobs.each {
-      println it.jobName
-    }
+    printJobInfo(generatedItems)
 
     then:
     noExceptionThrown()
@@ -34,11 +27,19 @@ class SeedsValidityTest extends Specification {
 
   static List<File> getJobFiles() {
     List<File> files = []
-    new File('jenkins/seeds').eachFileRecurse(FileType.FILES) {
+    new File('seeds').eachFileRecurse(FileType.FILES) {
       if (it.name.endsWith('.groovy')) {
         files << it
       }
     }
     files
+  }
+
+  static void printJobInfo(GeneratedItems generatedItems) {
+    def jobs = generatedItems.jobs
+    println "Test generated " + jobs.size() + " jobs"
+    jobs.each {
+      println it.jobName
+    }
   }
 }
