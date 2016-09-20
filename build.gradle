@@ -7,6 +7,10 @@ repositories {
     maven { url 'http://nexus.delivery.puppetlabs.net/content/repositories/releases/' }
 }
 
+configurations {
+    dslLibs
+}
+
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.4'
     compile "org.jenkins-ci.plugins:job-dsl-core:${jobDslVersion}"
@@ -15,6 +19,8 @@ dependencies {
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testCompile "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}"
     testCompile "puppetlabs:puppet-jobdsl-lib:${puppetJobDslLibVersion}" //to support task:test
+
+    dslLibs "puppetlabs:puppet-jobdsl-lib:${puppetJobDslLibVersion}" //to support task:dslLibs
 }
 
 task wrapper(type: Wrapper) {
@@ -39,14 +45,27 @@ test {
 }
 
 // using an existing method in the jobdsl library called 'run' that can output the XML job files
-// specify the 'source' argument on the command line: ./gradlew debugXML -Psource=jenkins/seeds/exampleJob.groovy
+// specify the 'source' argument on the command line: ./gradlew debugXML -Psource=seeds/exampleJob.groovy
 task debugXML(dependsOn: 'classes', type: JavaExec) {
     if(project.hasProperty('source')){
         args(source.split(','))
         main = 'javaposse.jobdsl.Run'
         classpath sourceSets.main.runtimeClasspath
     }
-    else {
-        println('ERROR: Usage ./gradlew debugXML -Psource=jenkins/seeds/exampleJob.groovy')
+}
+debugXML.doFirst {
+    if(!project.hasProperty('source')){
+        throw new GradleException('ERROR: Usage ./gradlew debugXML -Psource=seeds/exampleJob.groovy')
     }
 }
+
+task dslLibs(type: Copy) {
+    into 'jobdsl-libs'
+    from configurations.dslLibs
+}
+
+task cleanDslLibs(type: Delete) {
+    delete 'jobdsl-libs'
+}
+
+clean.dependsOn cleanDslLibs
