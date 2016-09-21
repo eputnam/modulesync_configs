@@ -44,19 +44,29 @@ test {
     }
 }
 
-// using an existing method in the jobdsl library called 'run' that can output the XML job files
-// specify the 'source' argument on the command line: ./gradlew debugXML -Psource=seeds/exampleJob.groovy
+// using an existing method in the jobdsl library called 'run' that can output
+// the XML job files specify the 'source' argument on the command line:
+// ./gradlew debugXML -Psource=seeds/exampleJob.groovy
 task debugXML(dependsOn: 'classes', type: JavaExec) {
-    if(project.hasProperty('source')){
-        args(source.split(','))
-        main = 'javaposse.jobdsl.Run'
-        classpath sourceSets.main.runtimeClasspath
-    }
-}
-debugXML.doFirst {
+  def String working_dir = mkdir("build/tmp/debugXml")
+  def String original_working_dir = System.getenv("PWD")
+
+  doFirst {
     if(!project.hasProperty('source')){
-        throw new GradleException('ERROR: Usage ./gradlew debugXML -Psource=seeds/exampleJob.groovy')
+      throw new GradleException('ERROR: Usage ./gradlew debugXML -Psource=seeds/exampleJob.groovy')
     }
+  }
+
+  if(project.hasProperty('source')){
+    def files = []
+    source.split(',').each { example ->
+        files << (original_working_dir + "/" + example)
+    }
+    args(files)
+    main = 'javaposse.jobdsl.Run'
+    classpath = sourceSets.main.runtimeClasspath
+    workingDir = working_dir
+  }
 }
 
 task dslLibs(type: Copy) {
