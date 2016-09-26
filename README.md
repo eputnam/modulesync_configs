@@ -82,5 +82,5 @@ Total time: 3.249 secs
 This task is used by the CI system to copy locally the shared Puppet JobDSL libraries
 
 [registering-repo]: https://github.com/puppetlabs/ci-job-configs/blob/master/doc/cinext/registering-repos.md
-[puppet-jobdsl-lib]: https://github.com/puppetlabs/jenkins-jobdsl-lib
+[puppet-jobdsl-lib]: https://github.com/puppetlabs/puppet-jobdsl-lib
 [gradle-wrapper]: https://docs.gradle.org/current/userguide/gradle_wrapper.html
