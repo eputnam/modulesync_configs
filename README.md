@@ -25,7 +25,7 @@ Registering your repo is a simple step that will let the system know it needs to
 
 ### Using shared libraries
 #### Job DSL libraries
-Abstractions on top of the default JobDSL language for puppet specific jobs are created and maintained in a puppetlabs github repo [jenkins-jobdsl-lib][jenkins-jobdsl-lib] that library is distributed in our nexus instance and can be pinned by your project by setting the value of `puppetJobDslLibVersion` in the file `gradle.properties` 
+Abstractions on top of the default JobDSL language for puppet specific jobs are created and maintained in a puppetlabs github repo [puppet-jobdsl-lib][jenkins-jobdsl-lib] that library is distributed in our nexus instance and can be pinned by your project by setting the value of `puppetJobDslLibVersion` in the file `gradle.properties` 
 
 ## Local Development aka what is all that Gradle stuff?
 The gradle build tool is used to test the validity of the groovy files created locally without having to commit or access a jenkins instance. 
@@ -82,5 +82,5 @@ Total time: 3.249 secs
 This task is used by the CI system to copy locally the shared Puppet JobDSL libraries
 
 [registering-repo]: https://github.com/puppetlabs/ci-job-configs/blob/master/doc/cinext/registering-repos.md
-[jenkins-jobdsl-lib]: https://github.com/puppetlabs/jenkins-jobdsl-lib
+[puppet-jobdsl-lib]: https://github.com/puppetlabs/puppet-jobdsl-lib
 [gradle-wrapper]: https://docs.gradle.org/current/userguide/gradle_wrapper.html
