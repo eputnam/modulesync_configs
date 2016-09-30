@@ -4,6 +4,17 @@ Template for use of puppet CI with JobDSL. It is a simple two step process
 1. Merge this template in your repo's `jenkins` directory
 2. Register your repo in `ci-job-configs`
 
+## Merge the template
+We recommend using `subtree` (for more info see [this blog post][subtree])
+```
+cd <your-repo>
+git subtree add --prefix jenkins git@github.com:puppetlabs/jenkins-template.git master --squash
+```
+When you need to update with the latest in this jenkins-template
+```
+git subtree pull --prefix jenkins git@github.com:puppetlabs/jenkins-template.git master --squash
+```
+
 ### Jenkins template
 Copy this repo over your repository's `jenkins` sub-directory to get the layout that our CI system expects. There is one `mother seed job` per jenkins master that will scan and create the jobs based on this directory structure.
 
@@ -84,3 +95,4 @@ This task is used by the CI system to copy locally the shared Puppet JobDSL libr
 [registering-repo]: https://github.com/puppetlabs/ci-job-configs/blob/master/doc/cinext/registering-repos.md
 [puppet-jobdsl-lib]: https://github.com/puppetlabs/puppet-jobdsl-lib
 [gradle-wrapper]: https://docs.gradle.org/current/userguide/gradle_wrapper.html
+[subtree]: http://blogs.atlassian.com/2013/05/alternatives-to-git-submodule-git-subtree/
